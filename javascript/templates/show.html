@@ -1,0 +1,105 @@
+
+<a href="/#/jobsly/">Back to all postings</a>
+
+<table>
+  <tr>
+    <td><h2>{{job.jobTitle}}</h2></td>
+    <td><h2> - {{job.jobCompany}}</h2></td>
+    <td><a href="/#/jobsly/{{job._id}}/edit"><button>Edit Job Posting</button></a></td>
+  </tr>
+</table>
+
+<h3>Posted {{job.jobCreated | date:'yyyy-MM-dd'}}</h3>
+
+<p>
+  {{job.jobDescription}}
+</p>
+
+<h3>Responsibilities:</h3>
+
+<p>
+  {{job.jobResponsibilities}}
+</p>
+
+<div>
+  <img class="jobPicture" ng-src="{{job.jobPictureURL}}">
+</div>
+
+<table>
+  <tr>
+    <td><button ng-click="showApplication = !showApplication" ng-hide="job.jobFilled">Apply for Job</button></td>
+    <td>
+      <h3 ng-hide="job.jobFilled">This posting is still open.</h3>
+      <h3 ng-show="job.jobFilled">This posting has been filled.</h3>
+    </td>
+  </tr>
+</table>
+
+<div ng-show="showApplication">
+  <h2>Apply for {{job.jobTitle}} at {{job.jobCompany}}</h2>
+
+  <form ng-submit="addJobApplication(job)" name="newJobApplication">
+    <table>
+      <tr>
+        <td><label for="applicantName">Full Name: </label></td>
+        <td><input size="52" type="text" name="applicantName" ng-model="job.application.applicantName" required/></td>
+        <span ng-show="newJobApplication.text.$error.required">Name is required.</span>
+      </tr>
+
+      <tr>
+        <td><label for="applicantEmail">Email Address: </label></td>
+        <td>
+          <input size="52" type="email" name="applicantEmail" ng-model="job.application.applicantEmail" required/>
+          <span ng-show="newJobApplication.email.$error.required">Email is required.</span>
+          <span ng-show="newJobApplication.email.$error.required">Invalid email address.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td><label for="resumeURL">Resume URL: </label></td>
+        <td><input size="52" type="url" name="resumeURL" ng-model="job.application.resumeURL" required/></td>
+        <span ng-show="newJobApplication.url.$error.required">Resume URL is required.</span>
+        <span ng-show="newJobApplication.url.$error.required">Invalid URL.</span>
+      </tr>
+
+      <tr>
+        <td>&nbsp;</td>
+        <td><input type="submit" value="Create Application" /> <a ng-href="/#/jobsly/">Cancel</a></td>
+      </tr>
+    </table>
+  </form>
+</div>
+
+<div ng-hide="job.jobFilled">
+  <h3 ng-show="job.applications.length > 0">Current <span ng-show="job.applications.length > 0">
+    <ng-pluralize count="job.applications.length"
+      when="{'0': '',
+      'one': 'Applicant',
+      'other': 'Applicants',
+      'NaN': ''}">
+    </ng-pluralize><br>
+  </span></h3>
+
+  <h3 ng-hide="job.applications.length > 0">There Are Currently No Applicants</h3>
+</div>
+<!-- <div ng-repeat="applicant in job.applications">
+   -->
+  <table class="applicantsTable" ng-show="job.applications.length > 0">
+    <tr>
+      <th class="applicantsCell">Name</th>
+      <th class="applicantsCell">Email</th>
+      <th class="applicantsCell">Link to Resume</th>
+      <th>&nbsp;</th>
+    </tr>
+    <tr ng-repeat="applicant in job.applications">
+      <td class="applicantsCell">{{applicant.applicantName}}</td>
+      <td class="applicantsCell">{{applicant.applicantEmail}}</td>
+      <td class="applicantsCell">{{applicant.resumeURL}}</td>
+      <td>
+        <form ng-submit="deleteJobApplication(job, applicant)">
+          <input type="submit" value="Delete Application" />
+        </form>
+      </td>
+    </tr>
+  </table>
+<!-- </div> -->
